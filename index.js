@@ -2,6 +2,7 @@ const serverless = require("serverless-http");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const routes = require("./routes.js");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -29,4 +30,6 @@ app.all('/', (req, res) => {
     console.log("Just got a request!")
     res.send('CHUJ!')
 })
+app.use(`/`, routes);
+
 app.listen(process.env.PORT || 3000)
