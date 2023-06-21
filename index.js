@@ -26,10 +26,6 @@ mongoose
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
-app.all('/', (req, res) => {
-    console.log("Just got a request!")
-    res.send('CHUJ!')
-})
 app.use(`/`, routes);
 
 app.listen(process.env.PORT || 3000)

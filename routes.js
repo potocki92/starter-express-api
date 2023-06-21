@@ -28,7 +28,9 @@ const router = express.Router();
 /* 
 AUTHENTICATION USER 
 */
-
+router.get("/",  (req, res) => {
+  res.send("Witajcie!")
+})
 // LOGIN USER
 router.post("/login", loginUser);
 // REGISTER USER
