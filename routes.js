@@ -32,7 +32,7 @@ router.get("/",  (req, res) => {
   res.send("Witajcie!")
 })
 // LOGIN USER
-router.post("/login", authenticateToken, loginUser);
+router.post("/login", loginUser);
 // REGISTER USER
 router.post("/register", registerUser);
 
