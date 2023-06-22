@@ -7,6 +7,7 @@ const loginUser = (req, res) => {
   console.log("Login");
   User.findOne({ "user.email": email }, (err, user) => {
     if (user) {
+      res.send(user)
       const token = jwt.sign(
         { email: user.user.email, id: user._id },
         process.env.JWT_SECRET,
