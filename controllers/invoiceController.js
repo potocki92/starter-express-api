@@ -20,29 +20,25 @@ const addInvoice = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+// GET
 const getInvoices = async (req, res) => {
   const userId = decodeToken(req);
-  const { fields } = req.query;
 
   try {
     const user = await User.findById(userId);
     if (!user) {
       res.status(404).send("User not found", userId);
       return;
-    }
-
-    if (fields === 'selected') {
-      const selectedInvoices = user.invoices.map((invoice) => ({
-        _id: invoice._id,
-      }));
-      res.json(selectedInvoices);
-    } else if (fields === '_id') { // Dodaj warunek dla pobrania tylko pola _id
-      const invoiceIds = user.invoices.map((invoice) => invoice._id);
-      res.json(invoiceIds);
-    } else {
-      res.json(user.invoices);
-    }
-  } catch (error) {
+      }
+    const invoices = user.invoices.map((invoice) => {
+      invoice._id; 
+      invoice.invoiceNumber;
+      invoice.client.clientName;
+      invoice.date.dueDate
+    });
+      res.json(invoices);
+    
+    } catch (error) {
     console.log(error);
     res.status(500).send("Internal server error");
   }
