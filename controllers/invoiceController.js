@@ -22,19 +22,31 @@ const addInvoice = async (req, res) => {
 };
 // GET
 const getInvoices = async (req, res) => {
-  const userId = decodeToken(req)
+  const userId = decodeToken(req);
+  const { fields } = req.query; 
+
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      res.status(404).send("User not found", userId);
+    let query = User.findById(userId);
+
+  
+    if (fields === 'selected') {
+      query = query.select('_id invoices.invoiceNumber invoices.client.clientName invoices.dueDate');
+    }
+
+    const invoices = await query.exec();
+
+    if (!invoices) {
+      res.status(404).send("Invoices not found");
       return;
     }
-    res.json(user.invoices);
+
+    res.json(invoices);
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal server error");
   }
 };
+
 // GET
 const getEditInvoice = async (req, res) => {
   const userId = decodeToken(req)
