@@ -36,7 +36,7 @@ const getInvoices = async (req, res) => {
         _id: invoice._id,
         invoiceNumber: invoice.invoiceNumber,
         clientName: invoice.client.clientName,
-        dueDate: invoice.dueDate,
+        dueDate: invoice.date.dueDate,
       }));
       res.json(selectedInvoices);
     } else {
