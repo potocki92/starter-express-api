@@ -30,12 +30,12 @@ const getInvoices = async (req, res) => {
       res.status(404).send("User not found", userId);
       return;
       }
-    const invoices = user.invoices.map((invoice) => {
-      invoice._id; 
-      invoice.invoiceNumber;
-      invoice.client.clientName;
-      invoice.date.dueDate
-    });
+    const invoices = user.invoices.map((invoice) => ({
+      _id: invoice._id,
+      invoiceNumber: invoice.invoiceNumber,
+      clientName: invoice.client.clientName,
+      dueDate: invoice.date.dueDate,
+    }));
       res.json(invoices);
     
     } catch (error) {
