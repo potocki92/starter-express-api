@@ -22,7 +22,7 @@ const addInvoice = async (req, res) => {
 };
 const getInvoices = async (req, res) => {
   const userId = decodeToken(req);
-  const { fields } = req.query; 
+  const { fields } = req.query;
 
   try {
     const user = await User.findById(userId);
@@ -36,6 +36,9 @@ const getInvoices = async (req, res) => {
         _id: invoice._id,
       }));
       res.json(selectedInvoices);
+    } else if (fields === '_id') { // Dodaj warunek dla pobrania tylko pola _id
+      const invoiceIds = user.invoices.map((invoice) => invoice._id);
+      res.json(invoiceIds);
     } else {
       res.json(user.invoices);
     }
@@ -44,6 +47,7 @@ const getInvoices = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+
 
 // GET
 const getEditInvoice = async (req, res) => {
