@@ -20,27 +20,28 @@ const addInvoice = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
-// GET
 const getInvoices = async (req, res) => {
   const userId = decodeToken(req);
   const { fields } = req.query; 
 
   try {
-    let query = User.findById(userId);
-
-  
-    if (fields === 'selected') {
-      query = query.select('_id invoices.invoiceNumber invoices.client.clientName invoices.dueDate');
-    }
-
-    const invoices = await query.exec();
-
-    if (!invoices) {
-      res.status(404).send("Invoices not found");
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).send("User not found", userId);
       return;
     }
 
-    res.json(invoices);
+    if (fields === 'selected') {
+      const selectedInvoices = user.invoices.map((invoice) => ({
+        _id: invoice._id,
+        invoiceNumber: invoice.invoiceNumber,
+        clientName: invoice.client.clientName,
+        dueDate: invoice.dueDate,
+      }));
+      res.json(selectedInvoices);
+    } else {
+      res.json(user.invoices);
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal server error");
