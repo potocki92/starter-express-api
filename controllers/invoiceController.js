@@ -34,9 +34,6 @@ const getInvoices = async (req, res) => {
     if (fields === 'selected') {
       const selectedInvoices = user.invoices.map((invoice) => ({
         _id: invoice._id,
-        invoiceNumber: invoice.invoiceNumber,
-        clientName: invoice.client.clientName,
-        dueDate: invoice.date.dueDate,
       }));
       res.json(selectedInvoices);
     } else {
