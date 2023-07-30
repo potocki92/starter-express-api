@@ -23,14 +23,15 @@ const {
   putInvoice,
 } = require("./controllers/invoiceController.js");
 const authenticateToken = require("./middlewares/authMiddleware.js");
+const { logoutUser } = require("./controllers/logoutController.js");
 const router = express.Router();
 
 /* 
 AUTHENTICATION USER 
 */
-router.get("/",  (req, res) => {
-  res.send("Witajcie!")
-})
+router.get("/", (req, res) => {
+  res.send("Witajcie!");
+});
 // LOGIN USER
 router.post("/login", loginUser);
 // REGISTER USER
@@ -83,4 +84,10 @@ router.get("/user", authenticateToken, getUser);
 // PUT
 router.put("/user", authenticateToken, putUser);
 
+/*
+LOGOUT
+*/
+
+// POST
+router.post("/logout", logoutUser);
 module.exports = router;
