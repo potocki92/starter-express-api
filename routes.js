@@ -24,6 +24,7 @@ const {
 } = require("./controllers/invoiceController.js");
 const authenticateToken = require("./middlewares/authMiddleware.js");
 const { logoutUser } = require("./controllers/logoutController.js");
+const { getCurrentUser } = require("./controllers/current.js");
 const router = express.Router();
 
 /* 
@@ -90,4 +91,9 @@ LOGOUT
 
 // POST
 router.post("/logout", logoutUser);
+
+/*
+  CURRENT
+*/
+router.get("/current", getCurrentUser);
 module.exports = router;
