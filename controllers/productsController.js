@@ -5,6 +5,7 @@ var User = require("../models/userModel.js");
 const addProduct = async (req, res) => {
   const userId = decodeToken(req)
   const product = { ...req.body };
+  console.log(userId, product);
   try {
     const result = await User.updateOne(
       { _id: userId },
