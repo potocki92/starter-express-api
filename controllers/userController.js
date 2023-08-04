@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 // Login User
 const loginUser = (req, res) => {
+  const { email, password } = req.body;
   User.findOne({ "user.email": email }, async (err, user) => {
     if (user) {
       try {
