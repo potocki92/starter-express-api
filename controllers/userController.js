@@ -2,34 +2,55 @@ const decodeToken = require("../middlewares/decodeToken.js");
 const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
 // Login User
-
-const loginUser = (req, res, next) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  const user = User.findOne({ "user.email": email });
-  
-  if (!user || user.validPassword(password)) {
-    return res.status(400).json({
-      status: 'error',
-      code: 400,
-      message: 'Incorrect Login or password',
-      data: 'Bad request'
-    })
-  };
+  try {
+    const user = await User.findOne({ "user.email": email });
 
-  const payload = {
-    id: user._id,
-    email: user.user.email
-  }
-
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h'});
-  res.json({
-    status: 'success',
-    code: 200,
-    data: {
-      token
+    if (!user) {
+      return res.status(401).json({
+        status: 'error',
+        code: 401,
+        message: 'Incorrect login or password',
+        data: 'Unauthorized'
+      });
     }
-  })
+
+    const isPasswordValid = await bcrypt.compare(password, user.user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        status: 'error',
+        code: 401,
+        message: 'Incorrect login or password',
+        data: 'Unauthorized'
+      });
+    }
+
+    const payload = {
+      id: user._id,
+      email: user.user.email
+    }
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({
+      status: 'success',
+      code: 200,
+      data: {
+        token
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: 'Internal server error',
+      data: 'Internal Server Error'
+    });
+  }
 };
 
 
