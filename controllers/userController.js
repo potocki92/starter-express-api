@@ -76,7 +76,7 @@ const getUser = async (req, res) => {
 
 // PUT
 const putUser = async (req, res) => {
-  const userId = req.headers.userid;
+  const userId = decodeToken(req);
   const updateUser = { ...req.body };
   console.log(userId, updateUser);
   try {
