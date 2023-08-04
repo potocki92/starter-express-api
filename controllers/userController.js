@@ -18,9 +18,17 @@ const loginUser = async (req, res) => {
       });
     }
 
+    if (!password || !user.user.password) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'Missing login credentials',
+        data: 'Bad request'
+      });
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.user.password);
 
-    console.log(isPasswordValid);
     if (!isPasswordValid) {
       return res.status(401).json({
         status: 'error',
@@ -53,6 +61,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 
 
 // Register User
