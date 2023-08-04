@@ -8,7 +8,7 @@ const loginUser = (req, res, next) => {
   const { email, password } = req.body;
   const user = User.findOne({ "user.email": email });
   
-  if (!user || user.validPassword(password)) => {
+  if (!user || user.validPassword(password)) {
     return res.status(400).json({
       status: 'error',
       code: 400,
