@@ -1,33 +1,23 @@
 const decodeToken = require("../middlewares/decodeToken.js");
 const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 // Login User
 const loginUser = (req, res) => {
   const { email, password } = req.body;
-  User.findOne({ "user.email": email }, async (err, user) => {
+  User.findOne({ "user.email": email }, (err, user) => {
     if (user) {
-      try {
-        const passwordMatch = await bcrypt.compare(password, user.user.password);
-
-        if (passwordMatch) {
-          const token = jwt.sign(
-            { email: user.user.email, id: user._id },
-            process.env.JWT_SECRET,
-            {
-              expiresIn: "1h",
-            }
-          );
-          console.log("Login successfull");
-          res.json({ message: "Login Successful", user: user, token });
-        } else {
-
-          console.log("Password didn't match");
-          res.json({ message: "Password didn't match" });
-        }
-      } catch (error) {
-        console.error("Error comparing passwords:", error);
-        res.status(500).json({ message: "Internal server error" });
+      if (password === user.user.password) {
+        console.log("Login");
+        const token = jwt.sign(
+          { email: user.user.email, id: user._id },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "1h",
+          }
+        );
+        res.json({ message: "Login Successful", user: user, token });
+      } else {
+        res.json({ message: "Password didn't match" });
       }
     } else {
       res.status(404).json({ message: "User not registered" });
