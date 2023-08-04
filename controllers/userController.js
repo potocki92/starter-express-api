@@ -4,8 +4,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 // Login User
 const loginUser = (req, res) => {
-  const { email, password } = req.body;
-  console.log("Login");
   User.findOne({ "user.email": email }, async (err, user) => {
     if (user) {
       try {
@@ -19,8 +17,11 @@ const loginUser = (req, res) => {
               expiresIn: "1h",
             }
           );
+          console.log("Login successfull");
           res.json({ message: "Login Successful", user: user, token });
         } else {
+
+          console.log("Password didn't match");
           res.json({ message: "Password didn't match" });
         }
       } catch (error) {
