@@ -20,12 +20,8 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.user.password);
-
-    console.log(isPasswordValid);
-    if (!isPasswordValid) {
-
-    console.log("Incorrect login or password");
+    if (password !== user.user.password) {
+      console.log("Incorrect login or password");
       return res.status(401).json({
         status: 'error',
         code: 401,
@@ -43,7 +39,6 @@ const loginUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     return res.json({
-
       status: 'success',
       code: 200,
       data: {
@@ -60,6 +55,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 
 
 
