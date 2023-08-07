@@ -1,8 +1,6 @@
 const decodeToken = require("../middlewares/decodeToken.js");
 const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-
 // Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
