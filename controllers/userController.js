@@ -6,25 +6,16 @@ const bcrypt = require("bcrypt");
 // Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  
   try {
     const user = await User.findOne({ "user.email": email });
-
-    console.log(user.user, email, password);
+    
     if (!user) {
       return res.status(401).json({
         status: 'error',
         code: 401,
         message: 'Incorrect login or password',
         data: 'Unauthorized'
-      });
-    }
-
-    if (!password || !user.user.password) {
-      return res.status(400).json({
-        status: 'error',
-        code: 400,
-        message: 'Missing login credentials',
-        data: 'Bad request'
       });
     }
 
@@ -45,7 +36,8 @@ const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({
+
+    return res.json({
       status: 'success',
       code: 200,
       data: {
@@ -53,8 +45,8 @@ const loginUser = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
+    console.error("Error during login:", error);
+    return res.status(500).json({
       status: 'error',
       code: 500,
       message: 'Internal server error',
