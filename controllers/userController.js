@@ -37,9 +37,8 @@ const loginUser = async (req, res) => {
     return res.json({
       status: 'success',
       code: 200,
-      data: {
-        token
-      }
+      token
+    
     });
   } catch (error) {
     console.error("Error during login:", error);
