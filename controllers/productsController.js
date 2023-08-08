@@ -24,6 +24,7 @@ const addProduct = async (req, res) => {
 
 // GET
 const getProducts = async (req, res) => {
+  console.log(req);
   try {
     const userId = decodeToken(req)
     const user = await User.findById(userId);
