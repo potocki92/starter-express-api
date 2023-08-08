@@ -2,80 +2,58 @@ const decodeToken = require("../middlewares/decodeToken.js");
 const User = require("../models/userModel.js");
 const jwt = require("jsonwebtoken");
 // Login User
-// const loginUser = async (req, res) => {
-//   const { email, password } = req.body;
-  
-//   try {
-//     const user = await User.findOne({ "user.email": email });
-    
-//     console.log(user.user.password, email, password);
-//     if (!user) {
-//       return res.status(401).json({
-//         status: 'error',
-//         code: 401,
-//         message: 'Incorrect login or password',
-//         data: 'Unauthorized'
-//       });
-//     }
-
-//     if (password !== user.user.password) {
-//       console.log("Incorrect login or password");
-//       return res.status(401).json({
-//         status: 'error',
-//         code: 401,
-//         message: 'Incorrect login or password',
-//         data: 'Unauthorized'
-//       });
-//     }
-//     const token = jwt.sign(
-//       { email: user.user.email, id: user._id }, 
-//       process.env.JWT_SECRET, 
-//       { 
-//         expiresIn: '1h' 
-//       });
-
-//     return res.json({
-//       status: 'success',
-//       code: 200,
-//       data: {
-//         token
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Error during login:", error);
-//     return res.status(500).json({
-//       status: 'error',
-//       code: 500,
-//       message: 'Internal server error',
-//       data: 'Internal Server Error'
-//     });
-//   }
-// };
-
-
-const loginUser = (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log("Login");
-  User.findOne({ "user.email": email }, (err, user) => {
-    if (user) {
-      res.send(user)
-      const token = jwt.sign(
-        { email: user.user.email, id: user._id },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
-        }
-      );
-      if (password === user.user.password) {
-        res.json({ message: "Login Successful", user: user, token });
-      } else {
-        res.json({ message: "Password didn't match" });
-      }
-    } else {
-      res.status(404).json({ message: "User not registered" });
+  
+  try {
+    const user = await User.findOne({ "user.email": email });
+    
+    console.log(user.user.password, email, password);
+    if (!user) {
+      return res.status(401).json({
+        status: 'error',
+        code: 401,
+        message: 'Incorrect login or password',
+        data: 'Unauthorized'
+      });
     }
-  });
+
+    if (password !== user.user.password) {
+      console.log("Incorrect login or password");
+      return res.status(401).json({
+        status: 'error',
+        code: 401,
+        message: 'Incorrect login or password',
+        data: 'Unauthorized'
+      });
+    }
+    const token = jwt.sign(
+      { email: user.user.email, id: user._id }, 
+      process.env.JWT_SECRET, 
+      { 
+        expiresIn: '1h' 
+      });
+
+    return res.json({
+      status: 'success',
+      code: 200,
+      data: {
+        token
+      }
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: 'Internal server error',
+      data: 'Internal Server Error'
+    });
+  }
 };
+
+
+
 
 // Register User
 const registerUser = (req, res) => {
