@@ -52,18 +52,19 @@ const loginUser = async (req, res) => {
 };
 
 // Register User
-const registerUser = (req, res) => {
+const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  User.findOne({ "user.email": email }, (err, existingUser) => {
-    if (err) {
-      res.status(500).send({ message: "Server error" });
-      return;
-    }
+  try {
+    const existingUser = await User.findOne({ "user.email": email });
 
     if (existingUser) {
-      res.status(400).send({ message: "User already registered" });
-      return;
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: "User already registered",
+        data: "Bad Request",
+      });
     }
 
     const newUser = new User({
@@ -82,15 +83,27 @@ const registerUser = (req, res) => {
       },
     });
 
-    newUser.save((err) => {
-      if (err) {
-        res.status(500).send({ message: "Error while registering user" });
-        return;
-      }
+    await newUser.save();
 
-      res.status(201).send({ message: "Successfully Registered" });
+    return res.status(201).json({
+      status: "success",
+      code: 201,
+      message: "Successfully Registered",
+      data: "Created",
     });
-  });
+  } catch (error) {
+    console.error("Error during registration:", error);
+    return res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Internal server error",
+      data: "Internal Server Error",
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
 };
 
 // GET
