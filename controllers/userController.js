@@ -4,93 +4,99 @@ const jwt = require("jsonwebtoken");
 // Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  
+
   try {
     const user = await User.findOne({ "user.email": email });
-    
+
     console.log(user.user.password, email, password);
     if (!user) {
       return res.status(401).json({
-        status: 'error',
+        status: "error",
         code: 401,
-        message: 'Incorrect login or password',
-        data: 'Unauthorized'
+        message: "Incorrect login or password",
+        data: "Unauthorized",
       });
     }
 
     if (password !== user.user.password) {
       console.log("Incorrect login or password");
       return res.status(401).json({
-        status: 'error',
+        status: "error",
         code: 401,
-        message: 'Incorrect login or password',
-        data: 'Unauthorized'
+        message: "Incorrect login or password",
+        data: "Unauthorized",
       });
     }
     const token = jwt.sign(
-      { email: user.user.email, id: user._id }, 
-      process.env.JWT_SECRET, 
-      { 
-        expiresIn: '1h' 
-      });
+      { email: user.user.email, id: user._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return res.json({
-      status: 'success',
+      status: "success",
       code: 200,
-      token
-    
+      token,
     });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({
-      status: 'error',
+      status: "error",
       code: 500,
-      message: 'Internal server error',
-      data: 'Internal Server Error'
+      message: "Internal server error",
+      data: "Internal Server Error",
     });
   }
 };
 
-
-
-
 // Register User
 const registerUser = (req, res) => {
   const { name, email, password } = req.body;
-  User.findOne({ "user.email": email }, (err, user) => {
-    if (user) {
-      res.send({ message: "User already registered" });
-    } else {
-      const user = new User({
-        user: {
-          name,
-          email,
-          password,
-          NIP: "",
-          REGON: "",
-          address: {
-            city: "",
-            postalCode: "",
-            street: "",
-          },
-          phone: "",
-        },
-      });
-      user.save((err) => {
-        if (err) {
-          res.send(err);
-        } else {
-          res.send({ message: "Successfully Registered" });
-        }
-      });
+
+  User.findOne({ "user.email": email }, (err, existingUser) => {
+    if (err) {
+      res.status(500).send({ message: "Server error" });
+      return;
     }
+
+    if (existingUser) {
+      res.status(400).send({ message: "User already registered" });
+      return;
+    }
+
+    const newUser = new User({
+      user: {
+        name,
+        email,
+        password,
+        NIP: "",
+        REGON: "",
+        address: {
+          city: "",
+          postalCode: "",
+          street: "",
+        },
+        phone: "",
+      },
+    });
+
+    newUser.save((err) => {
+      if (err) {
+        res.status(500).send({ message: "Error while registering user" });
+        return;
+      }
+
+      res.status(201).send({ message: "Successfully Registered" });
+    });
   });
 };
 
 // GET
 const getUser = async (req, res) => {
   try {
-    const userId = decodeToken(req)
+    const userId = decodeToken(req);
     const user = await User.findById(userId);
     if (!user) {
       res.status(404).send("User not found");
